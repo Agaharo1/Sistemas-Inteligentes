@@ -10,7 +10,6 @@ class AdvanseGoal(State):
         self.last_y = -1
         self.last_action = AgentConsts.NO_MOVE
         
-       
         self.evasion_sequence = []
 
     def actualizarCoordenadas(self, perception):
@@ -30,6 +29,7 @@ class AdvanseGoal(State):
         return UP, DOWN, RIGHT, LEFT
 
     def Update(self, perception, map, agent):
+        print("AdvanseGoal Update")
         baseX, baseY, agentX, agentY = self.actualizarCoordenadas(perception)
         UP, DOWN, RIGHT, LEFT = self.perceptionToAction(perception)
         
@@ -47,9 +47,9 @@ class AdvanseGoal(State):
         # FASE 2: Lógica Normal (Movimiento Ideal)
         # ==========================================================
         action = AgentConsts.NO_MOVE
-        if agentX < baseX - 0.5:
+        if agentX < baseX - 1.1:
             action = AgentConsts.MOVE_RIGHT
-        elif agentX > 0.5 + baseX:
+        elif agentX > 1.1 + baseX:
             action = AgentConsts.MOVE_LEFT
         elif agentY < baseY:
             action = AgentConsts.MOVE_UP
@@ -85,15 +85,28 @@ class AdvanseGoal(State):
                     action = AgentConsts.MOVE_DOWN
                 elif self.last_action == AgentConsts.MOVE_LEFT:
                     action = AgentConsts.MOVE_DOWN
-
-    
+         
         self.last_x = agentX
         self.last_y = agentY
         self.last_action = action
 
         return action, True
-    
+
     def Transit(self, perception, map):
+        UP = perception[AgentConsts.NEIGHBORHOOD_UP]
+        DOWN = perception[AgentConsts.NEIGHBORHOOD_DOWN]
+        RIGHT = perception[AgentConsts.NEIGHBORHOOD_RIGHT]
+        LEFT = perception[AgentConsts.NEIGHBORHOOD_LEFT]
+        
+        print(f"[AdvanseGoal Transit] UP={UP}, DOWN={DOWN}, RIGHT={RIGHT}, LEFT={LEFT}")
+        print(f"[AdvanseGoal Transit] BASE constant = {AgentConsts.COMMAND_CENTER}")
+    
+        # Si la base está como vecino en alguna dirección, cambiar a ShootBase
+        if UP == AgentConsts.COMMAND_CENTER or DOWN == AgentConsts.COMMAND_CENTER or RIGHT == AgentConsts.COMMAND_CENTER or LEFT == AgentConsts.COMMAND_CENTER or UP == AgentConsts.PLAYER or DOWN == AgentConsts.PLAYER or RIGHT == AgentConsts.PLAYER or LEFT == AgentConsts.PLAYER:
+            print("✅ [AdvanseGoal Transit] ¡OBJETIVO DETECTADO! Cambiando a ShootBase")
+            return "Rotate"
+        
+        print("[AdvanseGoal Transit] Objetivo no detectado, permaneciendo en AdvanseGoal")
         return self.id
     
     def Reset(self):

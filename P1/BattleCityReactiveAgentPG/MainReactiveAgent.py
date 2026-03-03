@@ -10,4 +10,3 @@ from Reactive.ReactiveAgent import ReactiveAgent
 agent = ReactiveAgent("1","Isma")
 agentLoop(agent,True)
 
- 

@@ -2,6 +2,8 @@ from Agent.BaseAgent import BaseAgent
 from StateMachine.StateMachine import StateMachine
 from States.GoToCommandCenter import GoToCommandCenter
 from States.advanseGoal import AdvanseGoal
+from States.Rotate import Rotate
+from States.Shoot import Shoot
 
 
 class ReactiveAgent(BaseAgent):
@@ -9,7 +11,9 @@ class ReactiveAgent(BaseAgent):
         super().__init__(id, name)
         dictionary = {
         "GoToCommandCenter" : GoToCommandCenter("GoToCommandCenter"),
-        "AdvanseGoal" : AdvanseGoal("AdvanseGoal")
+        "AdvanseGoal" : AdvanseGoal("AdvanseGoal"),
+        "Shoot" : Shoot("Shoot"),
+        "Rotate" : Rotate("Rotate")
         }
         self.stateMachine = StateMachine("ReactiveBehavior",dictionary,"AdvanseGoal")
 
