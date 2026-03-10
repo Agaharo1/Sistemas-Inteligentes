@@ -8,7 +8,6 @@ class Shoot(State):
         self.last_direction = AgentConsts.NO_MOVE
 
     def Update(self, perception, map, agent):
-        print("🔫 [Shoot] Disparando")
         return AgentConsts.NO_MOVE, True
 
     def Transit(self, perception, map):
@@ -18,10 +17,10 @@ class Shoot(State):
         LEFT = perception[AgentConsts.NEIGHBORHOOD_LEFT]
 
         enemy_perceived = (
-            UP == AgentConsts.PLAYER or
-            DOWN == AgentConsts.PLAYER or
-            RIGHT == AgentConsts.PLAYER or
-            LEFT == AgentConsts.PLAYER
+            UP == AgentConsts.PLAYER or UP == AgentConsts.COMMAND_CENTER_ or
+            DOWN == AgentConsts.PLAYER or DOWN == AgentConsts.COMMAND_CENTER_ or
+            RIGHT == AgentConsts.PLAYER or RIGHT == AgentConsts.COMMAND_CENTER_ or
+            LEFT == AgentConsts.PLAYER or LEFT == AgentConsts.COMMAND_CENTER_
         )
 
         # Si ya no percibe enemigo, volver a avanzar
@@ -32,7 +31,11 @@ class Shoot(State):
             (self.last_direction == AgentConsts.MOVE_UP and UP == AgentConsts.PLAYER) or
             (self.last_direction == AgentConsts.MOVE_DOWN and DOWN == AgentConsts.PLAYER) or
             (self.last_direction == AgentConsts.MOVE_RIGHT and RIGHT == AgentConsts.PLAYER) or
-            (self.last_direction == AgentConsts.MOVE_LEFT and LEFT == AgentConsts.PLAYER)
+            (self.last_direction == AgentConsts.MOVE_LEFT and LEFT == AgentConsts.PLAYER) or
+            (self.last_direction == AgentConsts.MOVE_UP and UP == AgentConsts.COMMAND_CENTER_) or
+            (self.last_direction == AgentConsts.MOVE_DOWN and DOWN == AgentConsts.COMMAND_CENTER_) or
+            (self.last_direction == AgentConsts.MOVE_RIGHT and RIGHT == AgentConsts.COMMAND_CENTER_) or
+            (self.last_direction == AgentConsts.MOVE_LEFT and LEFT == AgentConsts.COMMAND_CENTER_)
         )
 
         # Si lo pierde de frente, volver a Rotate
