@@ -13,11 +13,18 @@ class AdvanseGoal(State):
         self.evasion_sequence = []
 
     def actualizarCoordenadas(self, perception):
-        self.base_x = perception[AgentConsts.COMMAND_CENTER_X]
-        self.base_y = perception[AgentConsts.COMMAND_CENTER_Y]
+       
         self.agentX = perception[AgentConsts.AGENT_X]
         self.agentY = perception[AgentConsts.AGENT_Y]
-        
+
+        if(perception[AgentConsts.COMMAND_CENTER_X]<=0):
+            print("base destruidaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaAAAAAAAAAAAAAAAaaaaa")  
+            self.base_x = perception[AgentConsts.EXIT_X]
+            self.base_y = perception[AgentConsts.EXIT_Y]  
+           
+        else:
+            self.base_x = perception[AgentConsts.COMMAND_CENTER_X]
+            self.base_y = perception[AgentConsts.COMMAND_CENTER_Y]
         return self.base_x, self.base_y, self.agentX, self.agentY
 
     def perceptionToAction(self, perception):
@@ -30,7 +37,7 @@ class AdvanseGoal(State):
 
     def Update(self, perception, map, agent):
         print("AdvanseGoal Update")
-        baseX, baseY, agentX, agentY = self.actualizarCoordenadas(perception)
+        objX, objY, agentX, agentY = self.actualizarCoordenadas(perception)
         UP, DOWN, RIGHT, LEFT = self.perceptionToAction(perception)
         
         # ==========================================================
@@ -47,13 +54,13 @@ class AdvanseGoal(State):
         # FASE 2: Lógica Normal (Movimiento Ideal)
         # ==========================================================
         action = AgentConsts.NO_MOVE
-        if agentX < baseX - 1.1:
+        if agentX < objX - 1.1:
             action = AgentConsts.MOVE_RIGHT
-        elif agentX > 1.1 + baseX:
+        elif agentX > 1.1 + objX:
             action = AgentConsts.MOVE_LEFT
-        elif agentY < baseY:
+        elif agentY < objY:
             action = AgentConsts.MOVE_UP
-        elif agentY > baseY:
+        elif agentY >  objY:
             action = AgentConsts.MOVE_DOWN
 
         # ==========================================================
@@ -61,7 +68,7 @@ class AdvanseGoal(State):
         # ==========================================================
         estoy_atascado = (agentX == self.last_x) and (agentY == self.last_y)
 
-        if estoy_atascado and self.last_action != AgentConsts.NO_MOVE:
+        if estoy_atascado and  (agentY >  objY) and self.last_action != AgentConsts.NO_MOVE:
             print("¡Atascado con muro irrompible! Iniciando maniobra de 4 turnos...")
             
             if self.last_action == AgentConsts.MOVE_DOWN and DOWN == AgentConsts.UNBREAKABLE:
@@ -76,15 +83,26 @@ class AdvanseGoal(State):
             elif self.last_action == AgentConsts.MOVE_LEFT and LEFT == AgentConsts.UNBREAKABLE:
                 action = AgentConsts.MOVE_RIGHT 
                 self.evasion_sequence = [AgentConsts.MOVE_RIGHT, AgentConsts.MOVE_DOWN, AgentConsts.MOVE_DOWN] 
-                
 
-            else:
-                if self.last_action == AgentConsts.MOVE_UP or self.last_action == AgentConsts.MOVE_DOWN:
-                    action = AgentConsts.MOVE_UP
-                elif self.last_action == AgentConsts.MOVE_RIGHT:
-                    action = AgentConsts.MOVE_DOWN
-                elif self.last_action == AgentConsts.MOVE_LEFT:
-                    action = AgentConsts.MOVE_DOWN
+        elif estoy_atascado and (agentY < objY) and self.last_action != AgentConsts.NO_MOVE:
+
+            if self.last_action == AgentConsts.MOVE_UP and UP == AgentConsts.UNBREAKABLE and RIGHT== AgentConsts.UNBREAKABLE:
+                action = AgentConsts.MOVE_LEFT 
+                self.evasion_sequence = [AgentConsts.MOVE_LEFT, AgentConsts.MOVE_LEFT, AgentConsts.MOVE_UP]   
+
+            elif self.last_action == AgentConsts.MOVE_UP and UP == AgentConsts.UNBREAKABLE and LEFT== AgentConsts.UNBREAKABLE:
+                action = AgentConsts.MOVE_RIGHT 
+                self.evasion_sequence = [AgentConsts.MOVE_RIGHT, AgentConsts.MOVE_RIGHT, AgentConsts.MOVE_UP]
+
+            elif self.last_action == AgentConsts.MOVE_RIGHT and RIGHT == AgentConsts.UNBREAKABLE:
+                action = AgentConsts.MOVE_LEFT 
+                self.evasion_sequence = [AgentConsts.MOVE_LEFT, AgentConsts.MOVE_UP, AgentConsts.MOVE_UP] 
+                
+            elif self.last_action == AgentConsts.MOVE_LEFT and LEFT == AgentConsts.UNBREAKABLE:
+                action = AgentConsts.MOVE_RIGHT 
+                self.evasion_sequence = [AgentConsts.MOVE_RIGHT, AgentConsts.MOVE_UP, AgentConsts.MOVE_UP] 
+
+          
          
         self.last_x = agentX
         self.last_y = agentY
