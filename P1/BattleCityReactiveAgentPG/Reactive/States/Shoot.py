@@ -17,10 +17,10 @@ class Shoot(State):
         LEFT = perception[AgentConsts.NEIGHBORHOOD_LEFT]
 
         enemy_perceived = (
-            UP == AgentConsts.PLAYER or UP == AgentConsts.COMMAND_CENTER_ or
-            DOWN == AgentConsts.PLAYER or DOWN == AgentConsts.COMMAND_CENTER_ or
-            RIGHT == AgentConsts.PLAYER or RIGHT == AgentConsts.COMMAND_CENTER_ or
-            LEFT == AgentConsts.PLAYER or LEFT == AgentConsts.COMMAND_CENTER_
+            UP == AgentConsts.PLAYER or UP == AgentConsts.COMMAND_CENTER or
+            DOWN == AgentConsts.PLAYER or DOWN == AgentConsts.COMMAND_CENTER or
+            RIGHT == AgentConsts.PLAYER or RIGHT == AgentConsts.COMMAND_CENTER or
+            LEFT == AgentConsts.PLAYER or LEFT == AgentConsts.COMMAND_CENTER
         )
 
         # Si ya no percibe enemigo, volver a avanzar
@@ -32,10 +32,10 @@ class Shoot(State):
             (self.last_direction == AgentConsts.MOVE_DOWN and DOWN == AgentConsts.PLAYER) or
             (self.last_direction == AgentConsts.MOVE_RIGHT and RIGHT == AgentConsts.PLAYER) or
             (self.last_direction == AgentConsts.MOVE_LEFT and LEFT == AgentConsts.PLAYER) or
-            (self.last_direction == AgentConsts.MOVE_UP and UP == AgentConsts.COMMAND_CENTER_) or
-            (self.last_direction == AgentConsts.MOVE_DOWN and DOWN == AgentConsts.COMMAND_CENTER_) or
-            (self.last_direction == AgentConsts.MOVE_RIGHT and RIGHT == AgentConsts.COMMAND_CENTER_) or
-            (self.last_direction == AgentConsts.MOVE_LEFT and LEFT == AgentConsts.COMMAND_CENTER_)
+            (self.last_direction == AgentConsts.MOVE_UP and UP == AgentConsts.COMMAND_CENTER) or
+            (self.last_direction == AgentConsts.MOVE_DOWN and DOWN == AgentConsts.COMMAND_CENTER) or
+            (self.last_direction == AgentConsts.MOVE_RIGHT and RIGHT == AgentConsts.COMMAND_CENTER) or
+            (self.last_direction == AgentConsts.MOVE_LEFT and LEFT == AgentConsts.COMMAND_CENTER)
         )
 
         # Si lo pierde de frente, volver a Rotate

@@ -13,7 +13,6 @@ class AdvanseGoal(State):
         self.evasion_sequence = []
 
     def actualizarCoordenadas(self, perception):
-       
         self.agentX = perception[AgentConsts.AGENT_X]
         self.agentY = perception[AgentConsts.AGENT_Y]
 
@@ -21,7 +20,7 @@ class AdvanseGoal(State):
             print("base destruidaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaAAAAAAAAAAAAAAAaaaaa")  
             self.base_x = perception[AgentConsts.EXIT_X]
             self.base_y = perception[AgentConsts.EXIT_Y]  
-           
+
         else:
             self.base_x = perception[AgentConsts.COMMAND_CENTER_X]
             self.base_y = perception[AgentConsts.COMMAND_CENTER_Y]
@@ -54,9 +53,9 @@ class AdvanseGoal(State):
         # FASE 2: Lógica Normal (Movimiento Ideal)
         # ==========================================================
         action = AgentConsts.NO_MOVE
-        if agentX < objX - 1.1:
+        if agentX < objX - 1.3:
             action = AgentConsts.MOVE_RIGHT
-        elif agentX > 1.1 + objX:
+        elif agentX > 1.3 + objX:
             action = AgentConsts.MOVE_LEFT
         elif agentY < objY:
             action = AgentConsts.MOVE_UP
@@ -107,7 +106,7 @@ class AdvanseGoal(State):
         self.last_x = agentX
         self.last_y = agentY
         self.last_action = action
-
+        agent.ultimo=action
         return action, True
 
     def Transit(self, perception, map):
@@ -121,7 +120,7 @@ class AdvanseGoal(State):
     
         # Si la base está como vecino en alguna dirección, cambiar a ShootBase
         if UP == AgentConsts.COMMAND_CENTER or DOWN == AgentConsts.COMMAND_CENTER or RIGHT == AgentConsts.COMMAND_CENTER or LEFT == AgentConsts.COMMAND_CENTER or UP == AgentConsts.PLAYER or DOWN == AgentConsts.PLAYER or RIGHT == AgentConsts.PLAYER or LEFT == AgentConsts.PLAYER:
-            print("✅ [AdvanseGoal Transit] ¡OBJETIVO DETECTADO! Cambiando a ShootBase")
+            print("[AdvanseGoal Transit] ¡OBJETIVO DETECTADO! Cambiando a ShootBase")
             return "Rotate"
         
         print("[AdvanseGoal Transit] Objetivo no detectado, permaneciendo en AdvanseGoal")
