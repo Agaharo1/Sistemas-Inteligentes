@@ -10,3 +10,6 @@ P1/BattleCityReactiveAgentPG/Reactive/States/__pycache__/Shoot.cpython-310.pyc
 P1/BattleCityReactiveAgentPG/StateMachine/__pycache__/State.cpython-310.pyc
 P1/BattleCityReactiveAgentPG/StateMachine/__pycache__/StateMachine.cpython-310.pyc
 P1/BattleCityReactiveAgentPG/.vscode/settings.json
+*:Zone.Identifier
+__pycache__/
+*.pyc
