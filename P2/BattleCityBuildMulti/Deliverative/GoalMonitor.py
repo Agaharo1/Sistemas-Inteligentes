@@ -39,9 +39,9 @@ class GoalMonitor:
         #TODO Mejorar esta modo chapuza
         # Estrategia: Priorizar por salud
         # Si tenemos poca salud, buscar la vida
-        if perception[AgentConsts.HEALTH] < 2:
-            print("Seleccionando meta: LIFE")
-            return self.goals[self.GOAL_LIFE]
+        if(perception[AgentConsts.COMMAND_CENTER_X]<=0):
+            print("Seleccionando meta: EXIT")
+            return self.goals[self.GOAL_EXIT]
           
         # Si tenemos salud media/alta, atacar al jugador
         elif perception[AgentConsts.HEALTH] == 2:

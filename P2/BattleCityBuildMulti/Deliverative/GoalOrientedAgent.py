@@ -119,7 +119,7 @@ class GoalOrientedAgent(BaseAgent):
         goal3Player = self._CreatePlayerGoal(perception)
         exitGoal = self._CreateExitGoal(perception)
         # Crear el monitor de objetivos
-        self.goalMonitor = GoalMonitor(self.problem,[goal1CommanCenter,goal2Life,goal3Player],exitGoal)
+        self.goalMonitor = GoalMonitor(self.problem,[goal1CommanCenter,goal2Life,goal3Player,exitGoal],exitGoal)
         # Crear el primer plan
         self.plan = self._CreatePlan(perception, map)
 
