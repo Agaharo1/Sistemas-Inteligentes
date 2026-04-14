@@ -1,6 +1,9 @@
 
 #Algoritmo A* genérico que resuelve cualquier problema descrito usando la plantilla de la
 #la calse Problem que tenga como nodos hijos de la clase Node
+from platform import node
+
+
 class AStar:
 
     def __init__(self, problem):
@@ -19,10 +22,52 @@ class AStar:
         #SI esto es asi, hay que cambiarle el padre y setearle el nuevo coste.
         self.open.clear()
         self.precessed.clear()
-        self.open.append(self.problem.Initial())
+        initial = self.problem.Initial()
+        initial.SetH(self.problem.Heuristic(initial))
+        self.open.append(initial)
         path = []
         #mientras no encontremos la meta y haya elementos en open....
         #TODO implementar el bucle de búsqueda del algoritmo A*
+        while not findGoal and len(self.open) > 0:
+            # Ordenar abiertos por F (G + H) para obtener el nodo con menor coste estimado
+            self.open.sort(key=lambda x: x.F())
+            
+            # Extraer el nodo con menor F
+            current = self.open.pop(0)
+            
+            # Comprobar si es la meta
+            if self.problem.IsASolution(current):
+                findGoal = True
+                path = self.ReconstructPath(current)
+            else:
+                # Añadir a cerrados
+                self.precessed.add(current)
+                
+                # Generar sucesores
+                successors = self.problem.GetSucessors(current)
+                
+                for successor in successors:
+                    if successor not in self.precessed:
+                        # Calcular el nuevo G
+                        newG = current.G() + self.problem.GetGCost(successor)
+                        
+                        # Comprobar si ya está en abiertos
+                        inOpen = self.GetSucesorInOpen(successor)
+                        
+                        if inOpen is None:
+                            # No está en abiertos, lo añadimos
+                            self._ConfigureNode(successor, current, newG)
+                            successor.SetH(self.problem.Heuristic(successor))
+                            self.ApendInOpen(successor)
+                        else:
+                            # Está en abiertos, comprobar si el nuevo camino es mejor
+                            if newG < inOpen.G():
+                                self._ConfigureNode(inOpen, current, newG)
+                                inOpen.SetH(self.problem.Heuristic(inOpen))
+
+        for node in path:
+            print(f"Path node: {node}")          
+        
         return path
 
     #nos permite configurar un nodo (node) con el padre y la nueva G
@@ -30,6 +75,7 @@ class AStar:
         node.SetParent(parent)
         node.SetG(newG)
         #TODO Setearle la heuristica que está implementada en el problema. (si ya la tenía será la misma pero por si reutilizais este método para otras cosas)
+        node.SetH(self.problem.Heuristic(node))
 
 
     def ApendInOpen(self, node):
@@ -53,7 +99,12 @@ class AStar:
     def ReconstructPath(self, goal):
         path = []
         #TODO: devuelve el path invertido desde la meta hasta que el padre sea None.
-        return path
+        current = goal
+        while current is not None:
+            path.append(current)
+            current = current.GetParent()
+        # Invertir el path para darlo en orden desde inicio a meta
+        return path[::-1]
 
 
 

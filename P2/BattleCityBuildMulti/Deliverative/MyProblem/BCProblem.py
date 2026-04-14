@@ -32,14 +32,29 @@ class BCProblem(Problem):
     #Calcula la heuristica del nodo en base al problema planteado (Se necesita reimplementar)
     def Heuristic(self, node):
         #TODO: heurística del nodo
-        print("Aqui falta ncosas por hacer :) ")
-        return 0
+        #Distancia de Manhattan desde el nodo actual a la meta
+        goal = self.GetGoal()
+        print(f"Heuristic: Nodo {node} a Meta {goal}")
+        return abs(node.x - goal.x) + abs(node.y - goal.y)
 
     #Genera la lista de sucesores del nodo (Se necesita reimplementar)
     def GetSucessors(self, node):
         successors = []
         #TODO: sucesores de un nodo dado
-        print("Aqui falta ncosas por hacer :) ")
+        # Generar 4 sucesores: arriba, abajo, derecha, izquierda
+        directions = [(0, -1), (0, 1), (1, 0), (-1, 0)]  # up, down, right, left
+        
+        for dx, dy in directions:
+            newX = node.x + dx
+            newY = node.y + dy
+            
+            # Verificar que está dentro del mapa
+            if 0 <= newX < self.xSize and 0 <= newY < self.ySize:
+                value = self.map[newX][newY]
+                # Verificar que puede moverse a esa casilla
+                if BCProblem.CanMove(value):
+                    self.CreateNode(successors, node, newX, newY)
+        
         return successors
     
     #métodos estáticos
@@ -93,8 +108,22 @@ class BCProblem(Problem):
     @staticmethod
     def GetCost(value):
         #TODO: debes darle un coste a cada tipo de casilla del mapa.
-        print("Aqui falta ncosas por hacer :) ")
-        return sys.maxsize
+        if value == AgentConsts.NOTHING:
+            return 1
+        elif value == AgentConsts.BRICK:
+            return 2
+        elif value == AgentConsts.SEMI_BREKABLE:
+            return 2
+        elif value == AgentConsts.COMMAND_CENTER:
+            return 1
+        elif value == AgentConsts.LIFE:
+            return 1
+        elif value == AgentConsts.PLAYER:
+            return 1
+        elif value == AgentConsts.EXIT:
+            return 1
+        else:
+            return sys.maxsize
     
     def CreateNode(self,successors,parent,x,y):
         value=self.map[x][y]
