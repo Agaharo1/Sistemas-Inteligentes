@@ -22,8 +22,6 @@ class GoalMonitor:
             self.recalculate = False
             self.lastTime = perception[AgentConsts.TIME]
             return True
-        #TODO definir la estrategia de cuando queremos recalcular
-        #puede ser , por ejemplo cada cierto tiempo o cuanod tenemos poca vida.
         # Replanificar cada 50 unidades de tiempo
         if perception[AgentConsts.TIME] - self.lastTime > 50:
             self.lastTime = perception[AgentConsts.TIME]
@@ -36,7 +34,6 @@ class GoalMonitor:
     
     #selecciona la meta mas adecuada al estado actual
     def SelectGoal(self, perception, map, agent):
-        #TODO Mejorar esta modo chapuza
         # Estrategia: Priorizar por salud
         # Si tenemos poca salud, buscar la vida
         if(perception[AgentConsts.COMMAND_CENTER_X]<=0):

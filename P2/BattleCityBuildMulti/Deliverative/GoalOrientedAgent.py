@@ -60,11 +60,6 @@ class GoalOrientedAgent(BaseAgent):
     def _CreatePlan(self,perception,map):
         #currentGoal = self.problem.GetGoal()
         if self.goalMonitor != None:
-            #TODO creamos un plan, pasos:
-            #-con gualMonito, seleccionamos la meta actual (Que será la mas propicia => definir la estrategia a seguir).
-            #-le damos el modo inicial _CreateInitialNode
-            #-establecer la meta actual al problema para que A* sepa cual es.
-            #-Calcular el plan usando A*
             # 1. Seleccionar la meta más adecuada
             goal = self.goalMonitor.SelectGoal(perception, map, self)
             # 2. Crear nodo inicial
@@ -101,12 +96,6 @@ class GoalOrientedAgent(BaseAgent):
     #no podemos iniciarlo en el start porque no conocemos el mapa ni las posiciones de los objetos
     def InitAgent(self,perception,map):
         #creamos el problema
-        #creamos el problema
-        #TODO inicializamos:
-        # - creamos el problema con BCProblem
-        # - inicializamos el mapa problem.InitMap
-        # - inicializamos A*
-        # - creamos un plan inicial
         # Crear el problema (mapa de 15x15)
         self.problem = BCProblem(self._CreateInitialNode(perception), None, 15, 15)
         # Inicializar el mapa

@@ -25,6 +25,46 @@ class ExecutePlan(State):
         distance=abs(self.XPos - xW) + abs(self.YPos - yW)
         self.XPos = xW
         self.YPos = yW
+
+        # --- COMPORTAMIENTO ADICIONAL: JUGADOR CERCA ---
+        # Si tienes cerca al jugador y a tiro, dispararle.
+        # Si está cerca y no a tiro, girar hacia él y dispararle (para abrir camino).
+        pX = perception[AgentConsts.PLAYER_X]
+        pY = perception[AgentConsts.PLAYER_Y]
+        if pX > 0 and pY > 0:
+            distToPlayer = abs(xW - pX) + abs(yW - pY)
+            if distToPlayer < 6.0:  # Está "cerca"
+                is_in_sight = False
+                move_towards = AgentConsts.NO_MOVE
+                # Comprobamos si está directamente a tiro
+                directions = [
+                    (AgentConsts.NEIGHBORHOOD_UP, AgentConsts.MOVE_UP),
+                    (AgentConsts.NEIGHBORHOOD_DOWN, AgentConsts.MOVE_DOWN),
+                    (AgentConsts.NEIGHBORHOOD_RIGHT, AgentConsts.MOVE_RIGHT),
+                    (AgentConsts.NEIGHBORHOOD_LEFT, AgentConsts.MOVE_LEFT)
+                ]
+                for dir_idx, move_cmd in directions:
+                    if perception[dir_idx] == AgentConsts.PLAYER:
+                        move_towards = move_cmd
+                        is_in_sight = True
+                        break
+                
+                if is_in_sight:
+                    self.lastMove = move_towards
+                    return move_towards, (perception[AgentConsts.CAN_FIRE] == 1)
+                else:
+                    # Está cerca pero no a tiro (probablemente detrás de muro o en diagonal)
+                    diffX = pX - xW
+                    diffY = pY - yW
+                    if abs(diffX) > abs(diffY):
+                        move_towards = AgentConsts.MOVE_RIGHT if diffX > 0 else AgentConsts.MOVE_LEFT
+                    else:
+                        move_towards = AgentConsts.MOVE_UP if diffY > 0 else AgentConsts.MOVE_DOWN
+                    
+                    self.lastMove = move_towards
+                    return move_towards, (perception[AgentConsts.CAN_FIRE] == 1)
+        # -----------------------------------------------
+
         if distance < 0.1 :
             self.noMovements += 1
         else:

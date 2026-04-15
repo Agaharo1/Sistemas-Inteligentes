@@ -13,21 +13,15 @@ class AStar:
 
     def GetPlan(self):
         findGoal = False
-        #TODO implementar el algoritmo A*
-        #cosas a tener en cuenta:
-        #Si el número de sucesores es 0 es que el algoritmo no ha encontrado una solución, devolvemos el path vacio []
-        #Hay que invertir el path para darlo en el orden correcto al devolverlo (path[::-1])
-        #GetSucesorInOpen(sucesor) nos devolverá None si no lo encuentra, si lo encuentra
-        #es que ese sucesor ya está en la frontera de exploración, DEBEMOS MIRAR SI EL NUEVO COSTE ES MENOR QUE EL QUE TENIA ALMACENADO
-        #SI esto es asi, hay que cambiarle el padre y setearle el nuevo coste.
+        
         self.open.clear()
         self.precessed.clear()
         initial = self.problem.Initial()
         initial.SetH(self.problem.Heuristic(initial))
         self.open.append(initial)
         path = []
+        
         #mientras no encontremos la meta y haya elementos en open....
-        #TODO implementar el bucle de búsqueda del algoritmo A*
         while not findGoal and len(self.open) > 0:
             # Ordenar abiertos por F (G + H) para obtener el nodo con menor coste estimado
             self.open.sort(key=lambda x: x.F())
@@ -74,7 +68,6 @@ class AStar:
     def _ConfigureNode(self, node, parent, newG):
         node.SetParent(parent)
         node.SetG(newG)
-        #TODO Setearle la heuristica que está implementada en el problema. (si ya la tenía será la misma pero por si reutilizais este método para otras cosas)
         node.SetH(self.problem.Heuristic(node))
 
 
@@ -98,7 +91,6 @@ class AStar:
     #reconstruye el path desde la meta encontrada.
     def ReconstructPath(self, goal):
         path = []
-        #TODO: devuelve el path invertido desde la meta hasta que el padre sea None.
         current = goal
         while current is not None:
             path.append(current)

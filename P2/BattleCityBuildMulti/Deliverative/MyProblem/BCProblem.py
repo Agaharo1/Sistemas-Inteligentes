@@ -31,7 +31,6 @@ class BCProblem(Problem):
 
     #Calcula la heuristica del nodo en base al problema planteado (Se necesita reimplementar)
     def Heuristic(self, node):
-        #TODO: heurística del nodo
         #Distancia de Manhattan desde el nodo actual a la meta
         goal = self.GetGoal()
         print(f"Heuristic: Nodo {node} a Meta {goal}")
@@ -40,7 +39,6 @@ class BCProblem(Problem):
     #Genera la lista de sucesores del nodo (Se necesita reimplementar)
     def GetSucessors(self, node):
         successors = []
-        #TODO: sucesores de un nodo dado
         # Generar 4 sucesores: arriba, abajo, derecha, izquierda
         directions = [(0, -1), (0, 1), (1, 0), (-1, 0)]  # up, down, right, left
         
@@ -107,7 +105,7 @@ class BCProblem(Problem):
     #crea un nodo y lo añade a successors (lista) con el padre indicado y la posición x,y en coordenadas mapa 
     @staticmethod
     def GetCost(value):
-        #TODO: debes darle un coste a cada tipo de casilla del mapa.
+        # debes darle un coste a cada tipo de casilla del mapa.
         if value == AgentConsts.NOTHING:
             return 1
         elif value == AgentConsts.BRICK:
