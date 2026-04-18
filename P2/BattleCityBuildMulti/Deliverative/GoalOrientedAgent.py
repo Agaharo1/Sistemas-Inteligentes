@@ -53,21 +53,16 @@ class GoalOrientedAgent(BaseAgent):
         goal3Player = self._CreatePlayerGoal(perception)
         self.goalMonitor.UpdateGoals(goal3Player,2)
         if self.goalMonitor.NeedReplaning(perception,map,self):
-            self.problem.InitMap(map) ## refrescamos el mapa
+            self.problem.InitMap(map) 
             self.plan=self._CreatePlan(perception, map)
         return action, shot
     
     def _CreatePlan(self,perception,map):
-        #currentGoal = self.problem.GetGoal()
         if self.goalMonitor != None:
-            # 1. Seleccionar la meta más adecuada
             goal = self.goalMonitor.SelectGoal(perception, map, self)
-            # 2. Crear nodo inicial
             initial = self._CreateInitialNode(perception)
-            # 3. Establecer el nodo inicial y la meta en el problema
             self.problem.SetInitial(initial)
             self.problem.SetGoal(goal)
-            # 4. Calcular el plan
         return self.aStar.GetPlan()
         
     @staticmethod
@@ -95,8 +90,6 @@ class GoalOrientedAgent(BaseAgent):
     
     #no podemos iniciarlo en el start porque no conocemos el mapa ni las posiciones de los objetos
     def InitAgent(self,perception,map):
-        #creamos el problema
-        # Crear el problema (mapa de 15x15)
         self.problem = BCProblem(self._CreateInitialNode(perception), None, 15, 15)
         # Inicializar el mapa
         self.problem.InitMap(map)
@@ -107,9 +100,7 @@ class GoalOrientedAgent(BaseAgent):
         goal2Life = self._CreateLifeGoal(perception)
         goal3Player = self._CreatePlayerGoal(perception)
         exitGoal = self._CreateExitGoal(perception)
-        # Crear el monitor de objetivos
         self.goalMonitor = GoalMonitor(self.problem,[goal1CommanCenter,goal2Life,goal3Player,exitGoal],exitGoal)
-        # Crear el primer plan
         self.plan = self._CreatePlan(perception, map)
 
     @staticmethod

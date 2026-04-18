@@ -21,40 +21,31 @@ class AStar:
         self.open.append(initial)
         path = []
         
-        #mientras no encontremos la meta y haya elementos en open....
+
         while not findGoal and len(self.open) > 0:
-            # Ordenar abiertos por F (G + H) para obtener el nodo con menor coste estimado
             self.open.sort(key=lambda x: x.F())
             
-            # Extraer el nodo con menor F
             current = self.open.pop(0)
             
-            # Comprobar si es la meta
             if self.problem.IsASolution(current):
                 findGoal = True
                 path = self.ReconstructPath(current)
             else:
-                # Añadir a cerrados
                 self.precessed.add(current)
                 
-                # Generar sucesores
                 successors = self.problem.GetSucessors(current)
                 
                 for successor in successors:
                     if successor not in self.precessed:
-                        # Calcular el nuevo G
                         newG = current.G() + self.problem.GetGCost(successor)
                         
-                        # Comprobar si ya está en abiertos
                         inOpen = self.GetSucesorInOpen(successor)
                         
                         if inOpen is None:
-                            # No está en abiertos, lo añadimos
                             self._ConfigureNode(successor, current, newG)
                             successor.SetH(self.problem.Heuristic(successor))
                             self.ApendInOpen(successor)
                         else:
-                            # Está en abiertos, comprobar si el nuevo camino es mejor
                             if newG < inOpen.G():
                                 self._ConfigureNode(inOpen, current, newG)
                                 inOpen.SetH(self.problem.Heuristic(inOpen))
@@ -64,7 +55,6 @@ class AStar:
         
         return path
 
-    #nos permite configurar un nodo (node) con el padre y la nueva G
     def _ConfigureNode(self, node, parent, newG):
         node.SetParent(parent)
         node.SetG(newG)
@@ -75,9 +65,6 @@ class AStar:
         if node.g == None:
             print("ApendInOpen ", node.x, node.y)
         self.open.append(node)
-
-    #nos dice si un sucesor está en abierta. Si esta es que ya ha sido expandido y tendrá un coste, comprobar que le nuevo camino no es más eficiente
-    #En caso de serlos, _ConfigureNode para setearle el nuevo padre y el nuevo G, asi como su heurística
     def GetSucesorInOpen(self,sucesor):
         i = 0
         found = None
@@ -95,7 +82,6 @@ class AStar:
         while current is not None:
             path.append(current)
             current = current.GetParent()
-        # Invertir el path para darlo en orden desde inicio a meta
         return path[::-1]
 
 

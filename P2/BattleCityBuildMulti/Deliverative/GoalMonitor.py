@@ -22,11 +22,9 @@ class GoalMonitor:
             self.recalculate = False
             self.lastTime = perception[AgentConsts.TIME]
             return True
-        # Replanificar cada 50 unidades de tiempo
         if perception[AgentConsts.TIME] - self.lastTime > 50:
             self.lastTime = perception[AgentConsts.TIME]
             return True
-        # Replanificar si tenemos poca vida (menos de 50% de la salud)
         if perception[AgentConsts.HEALTH] < 50:
             self.lastTime = perception[AgentConsts.TIME]
             return True
@@ -34,17 +32,13 @@ class GoalMonitor:
     
     #selecciona la meta mas adecuada al estado actual
     def SelectGoal(self, perception, map, agent):
-        # Estrategia: Priorizar por salud
-        # Si tenemos poca salud, buscar la vida
         if(perception[AgentConsts.COMMAND_CENTER_X]<=0):
             print("Seleccionando meta: EXIT")
             return self.goals[self.GOAL_EXIT]
-          
-        # Si tenemos salud media/alta, atacar al jugador
+    
         elif perception[AgentConsts.HEALTH] == 2:
             print("Seleccionando meta: PLAYER")
             return self.goals[self.GOAL_PLAYER]
-        # En otro caso, buscar el command center (primera meta válida)
         else:
             print("Seleccionando meta: COMMAND CENTER")
             for goal in self.goals:

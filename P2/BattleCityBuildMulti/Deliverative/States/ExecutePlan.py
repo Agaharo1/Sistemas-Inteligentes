@@ -26,17 +26,13 @@ class ExecutePlan(State):
         self.XPos = xW
         self.YPos = yW
 
-        # --- COMPORTAMIENTO ADICIONAL: JUGADOR CERCA ---
-        # Si tienes cerca al jugador y a tiro, dispararle.
-        # Si está cerca y no a tiro, girar hacia él y dispararle (para abrir camino).
         pX = perception[AgentConsts.PLAYER_X]
         pY = perception[AgentConsts.PLAYER_Y]
         if pX > 0 and pY > 0:
             distToPlayer = abs(xW - pX) + abs(yW - pY)
-            if distToPlayer < 6.0:  # Está "cerca"
+            if distToPlayer < 6.0:  
                 is_in_sight = False
                 move_towards = AgentConsts.NO_MOVE
-                # Comprobamos si está directamente a tiro
                 directions = [
                     (AgentConsts.NEIGHBORHOOD_UP, AgentConsts.MOVE_UP),
                     (AgentConsts.NEIGHBORHOOD_DOWN, AgentConsts.MOVE_DOWN),
@@ -53,7 +49,6 @@ class ExecutePlan(State):
                     self.lastMove = move_towards
                     return move_towards, (perception[AgentConsts.CAN_FIRE] == 1)
                 else:
-                    # Está cerca pero no a tiro (probablemente detrás de muro o en diagonal)
                     diffX = pX - xW
                     diffY = pY - yW
                     if abs(diffX) > abs(diffY):
@@ -70,25 +65,24 @@ class ExecutePlan(State):
         else:
             self.noMovements = 0
         x,y = BCProblem.WorldToMapCoordFloat(xW,yW,agent.problem.ySize)
-        # si estas en el nodo = lo elimino para poder seguir con el siguiente, si me quedo sin nodos, es que he llegado ahora me puede interesar quedarme a 2 nodos.
         plan = agent.GetPlan()
-        if len(plan) == 0 : # no tengo un plan para conseguir mis objetivos, me quedo quieto.
+        if len(plan) == 0 : 
             agent.goalMonitor.ForceToRecalculate()
             return AgentConsts.NO_MOVE,False
         
         nextNode = plan[0]
         if self.IsInNode(nextNode,x,y,self.lastMove,0.17) and len(plan) >= 1:
             plan.pop(0)
-            if len(plan) == 0: # si al llegar al punto ya no hay nada mas que hacer me paro e indico que se recalcule
+            if len(plan) == 0: 
                 agent.goalMonitor.ForceToRecalculate()
                 return AgentConsts.NO_MOVE,False
             nextNode = plan[0]
         goal = agent.problem.GetGoal()
-        ## si estoy a distancia 1 del objetivo me paro
+       
         if  len(plan) <= 1 and (goal.value == AgentConsts.PLAYER or goal.value == AgentConsts.COMMAND_CENTER): 
             self.transition = "Attack"
             move = self.GetDirection(nextNode,x,y)
-            agent.directionToLook = move-1 ## la percepción es igual que el movimiento pero restando 1                
+            agent.directionToLook = move-1 
             shot = self.lastMove == move and perception[AgentConsts.CAN_FIRE] == 1
         else:
             move = self.GetDirection(nextNode,x,y)
@@ -105,28 +99,28 @@ class ExecutePlan(State):
 
     @staticmethod
     def MoveDown(node,x,y):
-        return abs(node.x+0.5 - x) <= abs(node.y+0.5 - y) and (node.y+0.5) >= y #+0.5 por el centro del nodo
+        return abs(node.x+0.5 - x) <= abs(node.y+0.5 - y) and (node.y+0.5) >= y 
     
 
     @staticmethod
     def MoveUp(node,x,y):
-        return abs(node.x+0.5 - x) <= abs(node.y+0.5 - y) and (node.y+0.5) <= y #+0.5 por el centro del nodo
+        return abs(node.x+0.5 - x) <= abs(node.y+0.5 - y) and (node.y+0.5) <= y 
     
 
     @staticmethod
     def MoveRight(node,x,y):
-        return abs(node.x+0.5 - x) >= abs(node.y+0.5 - y) and (node.x+0.5) >= x #+0.5 por el centro del nodo
+        return abs(node.x+0.5 - x) >= abs(node.y+0.5 - y) and (node.x+0.5) >= x 
     
 
     @staticmethod
     def MoveLeft(node,x,y):
-        return abs(node.x+0.5 - x) >= abs(node.y+0.5 - y) and (node.x +0.5) <= x #+0.5 por el centro del nodo
+        return abs(node.x+0.5 - x) >= abs(node.y+0.5 - y) and (node.x +0.5) <= x 
     
     @staticmethod
     def IsInNode(node, x,y, lastDir, threshold):
         distanceX = abs((node.x+0.5) - x)
         distanceY = abs((node.y+0.5) - y)
-        inAceptZone = abs((node.x+0.5) - x) < threshold and abs((node.y+0.5) - y)< threshold #+0.5 porque es el centro del nodo
+        inAceptZone = abs((node.x+0.5) - x) < threshold and abs((node.y+0.5) - y)< threshold 
         if inAceptZone:
             return True
         else:
@@ -135,9 +129,9 @@ class ExecutePlan(State):
             simulateY = y+directionY*threshold
             simulateDistanceX = abs((node.x+0.5) - simulateX)
             simulateDistanceY = abs((node.y+0.5) - simulateY)
-            if (simulateDistanceX+simulateDistanceY) > (distanceX+distanceY): ## estoy mas lejos me he pasado, paro
+            if (simulateDistanceX+simulateDistanceY) > (distanceX+distanceY): 
                 return True
-            else: #aún no he llegado al punto de aceptación
+            else: 
                 return False
 
     @staticmethod
@@ -154,15 +148,14 @@ class ExecutePlan(State):
             return -1.0, 0.0
 
     def GetDirection(self, node, x, y):
-        if ExecutePlan.MoveDown(node,x,y):# me muevo hacia abajo
+        if ExecutePlan.MoveDown(node,x,y):
             return AgentConsts.MOVE_DOWN
-        elif ExecutePlan.MoveUp(node,x,y):# me muevo hacia abajo
+        elif ExecutePlan.MoveUp(node,x,y):
             return AgentConsts.MOVE_UP
-        elif ExecutePlan.MoveRight(node,x,y):# me muevo hacia abajo
+        elif ExecutePlan.MoveRight(node,x,y):
             return AgentConsts.MOVE_RIGHT
-        elif ExecutePlan.MoveLeft(node,x,y):# me muevo hacia abajo
+        elif ExecutePlan.MoveLeft(node,x,y):
             return AgentConsts.MOVE_LEFT
         else:
             return AgentConsts.NO_MOVE
-            #me muevo en la dirección donde haya mas diferencia
 
